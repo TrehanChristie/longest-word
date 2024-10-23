@@ -1,6 +1,7 @@
 import random
 import string
 import enchant
+import requests
 
 class Game:
     def __init__(self) -> list:
@@ -15,9 +16,21 @@ class Game:
         len_word = len(word)
         sorted_word = sorted(word)
         sorted_grid = ''.join(sorted(self.grid))
-        return True if eng_dictionary.check(word) and sorted_word == sorted_grid[:len_word+1] else False
+
+        return self.__check_dictionary(word)
+
+        # return True if eng_dictionary.check(word) and sorted_word == sorted_grid[:len_word+1] else False
         # and self.sorted(word) == self.sorted(grid)
 
+
+    @staticmethod
+    def __check_dictionary(word):
+        # pull le wagon api dictionary to check word
+        response = requests.get(f"https://dictionary.lewagon.com/{word}/")
+
+        json_response = response.json()
+
+        return json_response['found']
 
 if __name__ == "__main__":
     game = Game()
